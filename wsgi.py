@@ -45,7 +45,21 @@ def del_product(id):
 
 @app.route('/api/v1/products', methods=['POST'])
 def add_product():
-    newproduct = request.get_json()
-    newproduct["id"] = ID.next()
+    requestedproduct = request.get_json()
+    newproduct = {"id": ID.next(), "name": requestedproduct["name"]}
     PRODUCTS.append(newproduct)
     return make_response(jsonify(newproduct),201)
+
+
+@app.route('/api/v1/products/<int:id>', methods=['PATCH'])
+def update_product(id):
+    requestedproduct = request.get_json()
+    if requestedproduct["name"] == "":
+        abort(422)
+
+    for x in PRODUCTS:
+        if x["id"] == id:
+            x["name"] = requestedproduct["name"]
+            return make_response("", 204)
+
+    abort(404)

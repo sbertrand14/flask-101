@@ -41,9 +41,38 @@ class TestViews(TestCase):
         self.assert404(response)
 
     def test_create_product(self):
-        newproduct = { 'id': 0, 'name': 'newproduct' }
+        newproduct = { 'name': 'newproduct' }
         response = self.client.post("/api/v1/products", json=newproduct)
         productreturned = response.get_json()
         self.assert_status(response,201)
         self.assertIsInstance(productreturned, dict)
         self.assertEquals(productreturned["id"], len(PRODUCTS))
+
+    def test_update_product(self):
+        response = self.client.get("/api/v1/products/1")
+        product = response.json
+        self.assert200(response)
+
+        productupdate = { "name" : "newname"}
+        response = self.client.patch("/api/v1/products/" + str(product["id"]), json=productupdate)
+        self.assert_status(response,204)
+
+        response = self.client.get("/api/v1/products/1")
+        productupdated = response.json
+        self.assert200(response)
+        self.assertEquals(productupdated["name"], productupdate["name"])
+
+
+    def test_update_product_withemptyname(self):
+        response = self.client.get("/api/v1/products/1")
+        product = response.json
+        self.assert200(response)
+
+        productupdate = { "name" : ""}
+        response = self.client.patch("/api/v1/products/" + str(product["id"]), json=productupdate)
+        self.assert_status(response,422)
+
+        response = self.client.get("/api/v1/products/1")
+        productupdated = response.json
+        self.assert200(response)
+        self.assertEquals(productupdated["name"], product["name"])
