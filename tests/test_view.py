@@ -1,12 +1,15 @@
 # tests/test_views.py
 from flask_testing import TestCase
 from flask import jsonify
-from wsgi import app, PRODUCTS
+from wsgi import app, PRODUCTS, reset_products
 
 class TestViews(TestCase):
     def create_app(self):
         app.config['TESTING'] = True
         return app
+
+    def setUp(self):
+        reset_products()
 
     def test_products_json(self):
         response = self.client.get("/api/v1/products")

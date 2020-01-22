@@ -7,12 +7,21 @@ app = Flask(__name__)
 def hello():
     return "Hello World!"
 
+INITIAL_PRODUCTS = [
+    { 'id': 1, 'name': 'Skello' },
+    { 'id': 2, 'name': 'Socialive.tv' },
+    { 'id': 3, 'name': 'truc' }
+]
+
 PRODUCTS = [
     { 'id': 1, 'name': 'Skello' },
     { 'id': 2, 'name': 'Socialive.tv' },
     { 'id': 3, 'name': 'truc' }
 ]
 
+from copy import copy
+def reset_products():
+    PRODUCTS = copy(INITIAL_PRODUCTS)
 
 class Counter:
     def __init__(self):
